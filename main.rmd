@@ -1,3 +1,13 @@
-#!/usr/bin/env Rscript
+---
+title: "Main File"
+output: html_document
+---
+
+```{r demo}
 a <- 5
 sprintf( "Hello! This is a: %f", a )
+```
+
+## Heading or Something
+
+And some text.
