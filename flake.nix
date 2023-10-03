@@ -11,6 +11,7 @@
 
         custom-r = pkgs.rWrapper.override{ 
             packages = with pkgs.rPackages; [
+                # knitr
                 rmarkdown
             ]; 
         };
@@ -29,8 +30,8 @@
                 pkgs.bashInteractive
             ];
             buildInputs = with pkgs; [ 
-                pkgs.texlive.combined.scheme-full
-                pkgs.pandoc
+                # pkgs.texlive.combined.scheme-full
+                # pkgs.pandoc
                 custom-r 
             ];
             buildPhase = ''
