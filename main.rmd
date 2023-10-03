@@ -1,0 +1,3 @@
+#!/usr/bin/env Rscript
+a <- 5
+sprintf( "Hello! This is a: %f", a )
