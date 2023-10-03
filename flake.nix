@@ -15,5 +15,23 @@
                 R
             ];
         };
+
+        packages.${system}.main = pkgs.stdenv.mkDerivation rec{
+            name = "main";
+            src = ./.;
+            buildInputs = with pkgs; [];
+            buildPhase = ''
+                chmod +x main.rmd
+            '';
+            installPhase = ''
+                mkdir -p $out/bin
+                cp main.rmd $out/bin
+            '';
+        };
+
+        apps.${system}.main = {
+            type = "app";
+            program = "${self.packages.${system}.main}/bin/main.rmd";
+        };
     };
 }
