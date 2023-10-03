@@ -25,7 +25,12 @@
         packages.${system}.main = pkgs.stdenv.mkDerivation rec{
             name = "main";
             src = ./.;
+            nativeBuildInputs = with pkgs; [ 
+                pkgs.bashInteractive
+            ];
             buildInputs = with pkgs; [ 
+                pkgs.texlive.combined.scheme-full
+                pkgs.pandoc
                 custom-r 
             ];
             buildPhase = ''
