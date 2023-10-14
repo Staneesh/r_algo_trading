@@ -9,37 +9,38 @@
         system = "x86_64-linux"; 
         pkgs = (import nixpkgs) { inherit system; };
 
-        custom-r = pkgs.rWrapper.override {  
-            packages = with pkgs.rPackages; [
-                rmarkdown
-            ]; 
-        };
+        r_packages = with pkgs.rPackages; [ rmarkdown ];
 
-        working_dir = "$(${pkgs.coreutils}/bin/pwd)";
+        custom-r = pkgs.rWrapper.override{ packages = r_packages; };
+        custom-r_studio = pkgs.rstudioWrapper.override{ packages = r_packages; };
+
+        build_packages = with pkgs; [
+            R
+            coreutils
+            pandoc
+            texlive.combined.scheme-full
+            custom-r
+            custom-r_studio
+        ];
     in
     {
         devShells.${system}.default = pkgs.mkShell {
-            buildInputs = with pkgs; [
-                custom-r
-            ];
+            nativeBuildInputs = [ pkgs.bashInteractive ];
+            buildInputs = build_packages;
             shellHook = ''
-                export HOME=${working_dir}
+                export HOME=`${pkgs.coreutils}/bin/pwd`
+                export LC_ALL="C"
             '';
         };
 
         packages.${system}.main = pkgs.stdenv.mkDerivation rec{
             name = "main";
             src = ./.;
-            nativeBuildInputs = with pkgs; [ 
-                pkgs.pandoc
-                pkgs.texlive.combined.scheme-full
-                pkgs.bashInteractive
-                custom-r 
-            ];
             buildPhase = ''
-                export HOME=${working_dir}
-                echo $HOME 
-                ${custom-r}/bin/Rscript -e "rmarkdown::render('main.rmd’, 'html_document')"
+                export HOME=`${pkgs.coreutils}/bin/pwd`
+                export LC_ALL="C"
+                #${pkgs.nix}/bin/nix develop -i --extra-experimental-features nix-command
+                ${custom-r}/bin/Rscript -e "library(rmarkdown); rmarkdown::render('main.rmd’, 'html_document');"
             '';
             installPhase = ''
                 mkdir -p $out/doc

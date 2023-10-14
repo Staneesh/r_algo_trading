@@ -2,9 +2,3 @@
 a <- 5
 sprintf( "Hello! This is a: %f", a )
 ```
-
-## Heading or Something
-
-And some text.
-
-
